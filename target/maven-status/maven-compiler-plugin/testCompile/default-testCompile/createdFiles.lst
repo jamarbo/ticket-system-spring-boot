@@ -1,0 +1,4 @@
+com\example\tickets\tickets\TicketServiceTest.class
+com\example\tickets\tickets\TicketControllerIT.class
+com\example\tickets\ApplicationTests.class
+com\example\tickets\PingControllerIT.class
