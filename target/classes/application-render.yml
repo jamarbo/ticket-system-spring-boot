@@ -1,0 +1,19 @@
+spring:
+  datasource:
+    # Usa la URL completa provista por Render (agrega ?sslmode=require si no viene)
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+    hikari:
+      maximum-pool-size: ${SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE:5}
+      initialization-fail-timeout: ${SPRING_DATASOURCE_HIKARI_INITIALIZATION_FAIL_TIMEOUT:0}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+  flyway:
+    enabled: true
+    # Usa el mismo datasource que JPA
+    locations: classpath:db/migration
+
+server:
+  port: ${PORT:8080}

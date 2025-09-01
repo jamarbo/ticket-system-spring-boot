@@ -6,7 +6,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class PingController {
 
-    @GetMapping("/ping")
+    // Exponer ping tanto en /ping como en /api/ping para evitar confusiones
+    @GetMapping({"/ping", "/api/ping"})
     public String ping() {
         return "pong";
     }
