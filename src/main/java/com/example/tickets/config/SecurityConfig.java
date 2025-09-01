@@ -58,14 +58,9 @@ public class SecurityConfig {
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         
-        // Permitir orígenes específicos (desarrollo y producción)
-        configuration.setAllowedOrigins(Arrays.asList(
-                "http://localhost:3000",     // React dev server
-                "http://localhost:4200",     // Angular dev server
-                "http://localhost:5173",     // Vite dev server
-                "http://localhost:8080",     // Local frontend
-                "https://your-frontend-domain.com"  // Producción (cambiar por el dominio real)
-        ));
+        // Permitir todos los orígenes (útil para despliegues sin frontend fijo como Render). 
+        // Si necesitas restringir, cambia a setAllowedOrigins con la lista exacta.
+        configuration.setAllowedOriginPatterns(Arrays.asList("*"));
         
         // Métodos HTTP permitidos
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
