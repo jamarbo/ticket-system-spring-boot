@@ -37,10 +37,12 @@ public class SecurityConfig {
                                 "/api/auth/**",
                                 "/ping",
                                 "/api/ping",
+                                "/actuator/**",
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",
                                 "/swagger-ui.html"
                         ).permitAll()
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/tickets").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/tickets/**").permitAll()
                         .requestMatchers(HttpMethod.DELETE, "/api/tickets/**").hasAuthority("ROLE_ADMIN")
