@@ -185,6 +185,23 @@ java -jar target/tickets-0.0.1-SNAPSHOT.jar
 
 La aplicación estará disponible en: **http://localhost:8080**
 
+## ☁️ Despliegue en Render (sin staging)
+
+1) En Render crea un servicio de base de datos Postgres para este proyecto.
+2) Copia la "Internal Database URL" (o la External para DataGrip) y conviértela a JDBC:
+  - jdbc:postgresql://<HOST_REAL>:5432/<DB_REAL>?sslmode=require
+3) Configura en tu Web Service estas variables:
+  - SPRING_PROFILES_ACTIVE=render
+  - SPRING_DATASOURCE_URL=jdbc:postgresql://<HOST_REAL>:5432/<DB_REAL>?sslmode=require
+  - SPRING_DATASOURCE_USERNAME=<USER>
+  - SPRING_DATASOURCE_PASSWORD=<PASSWORD>
+  - SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE=5
+  - SPRING_DATASOURCE_HIKARI_INITIALIZATION_FAIL_TIMEOUT=0
+4) Comandos de Render:
+  - Build: mvn -DskipTests clean package
+  - Start: java -jar target/tickets-0.0.1-SNAPSHOT.jar
+5) Asegúrate de que la rama a desplegar es la que deseas (por ejemplo, `feature/Deploy-to-Render`).
+
 ## 🔗 API Endpoints
 
 ### 🔐 Autenticación
