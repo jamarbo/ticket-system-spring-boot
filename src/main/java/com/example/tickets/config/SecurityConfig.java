@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -33,11 +34,11 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(
+            .requestMatchers(
                                 "/api/auth/**",
                                 "/ping",
                                 "/api/ping",
-                                "/actuator/**",
+                "/actuator/health",
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",
                                 "/swagger-ui.html"
@@ -54,13 +55,23 @@ public class SecurityConfig {
         return http.build();
     }
 
+    // Ignora completamente estos endpoints del filtro de seguridad
+    @Bean
+    WebSecurityCustomizer webSecurityCustomizer() {
+        return (web) -> web.ignoring().requestMatchers("/ping", "/api/ping", "/actuator/**");
+    }
+
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         
-        // Permitir todos los orígenes (útil para despliegues sin frontend fijo como Render). 
-        // Si necesitas restringir, cambia a setAllowedOrigins con la lista exacta.
-        configuration.setAllowedOriginPatterns(Arrays.asList("*"));
+    // Restringir CORS a orígenes conocidos (ajusta la lista según tu frontend real)
+    configuration.setAllowedOrigins(Arrays.asList(
+        "http://localhost:3000",
+        "http://localhost:4200",
+        "http://localhost:5173",
+        "https://ticket-system-spring-boot.onrender.com"
+    ));
         
         // Métodos HTTP permitidos
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
