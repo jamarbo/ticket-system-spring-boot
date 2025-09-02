@@ -63,7 +63,8 @@ public class SecurityConfig {
         "http://localhost:3000",
         "http://localhost:4200",
         "http://localhost:5173",
-        "https://ticket-system-spring-boot.onrender.com"
+        "https://ticket-system-spring-boot.onrender.com",
+         "https://iq-tickets-frontend.onrender.com"
     ));
         
         // Métodos HTTP permitidos
