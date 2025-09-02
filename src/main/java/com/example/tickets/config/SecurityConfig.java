@@ -43,8 +43,10 @@ public class SecurityConfig {
                                 "/swagger-ui.html"
                         ).permitAll()
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/tickets").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/tickets/**").permitAll()
+                        // Endpoints protegidos por anotaciones @PreAuthorize en controladores
+                        .requestMatchers(HttpMethod.POST, "/api/tickets").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/tickets/**").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/users/me").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/api/tickets/**").hasAuthority("ROLE_ADMIN")
                         .anyRequest().authenticated()
                 )

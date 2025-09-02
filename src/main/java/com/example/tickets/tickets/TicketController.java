@@ -1,6 +1,10 @@
 package com.example.tickets.tickets;
 
 import jakarta.validation.Valid;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -10,6 +14,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 //import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -23,6 +28,7 @@ public class TicketController {
     }
 
     @GetMapping
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Page<Ticket>> list(
             @RequestParam(required = false) String q,
             @RequestParam(required = false) Ticket.Status status,
@@ -45,6 +51,7 @@ public class TicketController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Ticket> getById(@PathVariable UUID id) {
         Ticket ticket = ticketService.findById(id);
         return ticket != null ? ResponseEntity.ok(ticket) : ResponseEntity.notFound().build();
@@ -67,9 +74,23 @@ public class TicketController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> delete(@PathVariable UUID id) {
         ticketService.deleteTicket(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{id}/permissions")
+    public ResponseEntity<Map<String, Boolean>> permissions(@PathVariable UUID id) {
+        // Permisos calculados en backend: no depende del cliente
+    Authentication auth = SecurityContextHolder.getContext() != null
+        ? SecurityContextHolder.getContext().getAuthentication()
+        : null;
+    boolean isAuthenticated = auth != null && auth.isAuthenticated();
+    boolean isAdmin = isAuthenticated && auth != null && auth.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .anyMatch("ROLE_ADMIN"::equals);
+        return ResponseEntity.ok(Map.of("canDelete", isAdmin));
     }
 }
 

@@ -36,17 +36,12 @@ public class TicketService {
 
     @Transactional
     public Ticket createTicket(TicketCreateDto dto) {
-        final String defaultUserEmail = "demo@example.com";
-        String userEmail;
-
-        var authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        // Check if authentication is null, not authenticated, or is anonymous
-        if (authentication == null || !authentication.isAuthenticated() || "anonymousUser".equals(authentication.getName())) {
-            userEmail = defaultUserEmail;
-        } else {
-            userEmail = authentication.getName();
+        var context = SecurityContextHolder.getContext();
+        var authentication = (context != null) ? context.getAuthentication() : null;
+        if (authentication == null || authentication.getName() == null || "anonymousUser".equals(authentication.getName())) {
+            throw new IllegalStateException("Cannot create ticket without an authenticated user");
         }
+        String userEmail = authentication.getName();
             
         User currentUser = userRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new IllegalStateException("The user for the ticket could not be found in the database: " + userEmail));
